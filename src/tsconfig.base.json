@@ -1,0 +1,13 @@
+{
+    "exclude": ["node_modules", "dist"],
+    "compileOnSave": true,
+    "compilerOptions": {
+     "target": "esnext",
+     "module": "esnext",
+     "moduleResolution": "node",
+     "lib": ["es6", "esnext", "DOM"],
+     "rootDir": ".",
+     "outDir": "dist",
+     "baseUrl": "./"
+    }
+   }

@@ -1,0 +1,30 @@
+{
+  "name": "vrage",
+  "version": "0.0.1",
+  "main": "index.js",
+
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsup"
+  },
+
+  "license": "MIT",
+  "types": "./dist/index.d.ts",
+  "keywords": [
+    "ragemp",
+    "typescript",
+    "vrage",
+    "framework"
+  ],
+  "author": "kwattt",
+  "devDependencies": {
+    "tsc": "^2.0.4",
+    "tsup": "^8.3.5",
+    "typescript": "^5.6.3",
+    "yarn": "^1.22.22"
+  },
+  "dependencies": {
+    "@ragempcommunity/types-client": "^2.1.8",
+    "@ragempcommunity/types-server": "^2.1.8"
+  }
+}
