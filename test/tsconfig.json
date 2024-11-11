@@ -1,0 +1,13 @@
+{
+    "extends": "./../tsconfig.base.json",
+    "compilerOptions": {
+        "types": ["jest", "node"],
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "allowSyntheticDefaultImports": true,
+        "strictPropertyInitialization": false,
+        // fix  possibly 'undefined' error
+        "strictNullChecks": false,
+    },
+    "include": ["./**/*.ts"]
+}

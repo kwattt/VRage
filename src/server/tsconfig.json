@@ -1,7 +1,10 @@
 {
-  "extends": "../tsconfig.base.json",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "types": ["../../node_modules/@ragempcommunity/types-server"]
+    "types": ["../../node_modules/@ragempcommunity/types-server", "node"],
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   },
+  // add experimentalDecorators 
   "include": ["./**/*.ts"]
 }

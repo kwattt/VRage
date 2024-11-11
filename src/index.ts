@@ -1,4 +1,11 @@
-export * from './client'
-export * from './server'
+import { DB } from './server/db';
+import { EntityManager } from './server/db/manager';
+import { Server } from './server';
 
-export * from './types'
+export const VRage = {
+  Client: {},
+  Server: Server,
+};
+
+export { DB, EntityManager, Server };
+export * from './server/types';
