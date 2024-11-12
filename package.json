@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "main": "./dist/server/index.js",
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com/@kwattt"
+    "registry": "https://npm.pkg.github.com/kwattt"
   },
   "exports": {
     "./client": {
