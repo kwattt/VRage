@@ -1,26 +1,16 @@
 {
   "name": "vrage",
   "version": "0.0.1",
-  "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
+  "main": "./dist/server/index.js",
   "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
-    },
     "./client": {
-      "types": "./dist/client/index.d.ts",
-      "import": "./dist/client/index.mjs",
-      "require": "./dist/client/index.js"
+      "require": "./dist/client/index.js",
+      "types": "./dist/client/index.d.ts"
     },
     "./server": {
-      "types": "./dist/server/index.d.ts",
-      "import": "./dist/server/index.mjs",
-      "require": "./dist/server/index.js"
-    },
-    "./package.json": "./package.json"
+      "require": "./dist/server/index.js",
+      "types": "./dist/server/index.d.ts"
+    }
   },
   "files": [
     "dist",
@@ -33,6 +23,7 @@
     "typecheck": "tsc --noEmit",
     "prepublishOnly": "yarn build"
   },
+
   "license": "MIT",
   "keywords": [
     "ragemp",

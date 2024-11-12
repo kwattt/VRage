@@ -1,4 +1,4 @@
-import {Account, Server} from 'vrage/dist/server'
+import {Account, DataBase, Server} from 'vrage/dist/server'
 import dotenv from 'dotenv'
 import { BaseEntity, Column, Entity, 
         JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
@@ -6,10 +6,6 @@ dotenv.config()
 
 
 describe('Database simple', function() {
-  beforeAll(() => {
-    Server.create('postgres')
-  });
-
   afterAll(async () => {
     if(Server.Database) {
       await Server.Database.close()
@@ -17,7 +13,7 @@ describe('Database simple', function() {
   })
 
   it('should start the database', async function() {
-    await Server.launch()
+    await Server.Core.launch()
     expect(Server.Database).toBeDefined()
 
     console.log('Dropping database for tests')
@@ -45,10 +41,6 @@ describe('Database simple', function() {
 })
 
 describe('Database custom entities', function() {
-  beforeAll(() => {
-    Server.create('postgres')
-  });
-
   afterAll(async () => {
     if(Server.Database) {
       await Server.Database.close()
@@ -80,7 +72,7 @@ describe('Database custom entities', function() {
     Server.Database.registerEntity(PatitoFromPlayer)
 
     console.log('Launching database')
-    await Server.launch()
+    await Server.Core.launch()
     expect(Server.Database).toBeDefined()
     await Server.Database._ds.dropDatabase()
     await Server.Database._ds.synchronize()

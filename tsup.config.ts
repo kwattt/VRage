@@ -1,10 +1,8 @@
-// tsup.config.ts
 import { defineConfig } from 'tsup'
 
 export default defineConfig({
-  format: ['cjs', 'esm'],
+  format: ['cjs'],  // RageMP uses CommonJS, so we can remove ESM
   entry: {
-    'index': 'src/index.ts',
     'client/index': 'src/client/index.ts',
     'server/index': 'src/server/index.ts',
   },
@@ -12,11 +10,15 @@ export default defineConfig({
   target: 'es2016',
   platform: 'node',
   shims: true,
-  skipNodeModulesBundle: true,
   clean: true,
   splitting: false,
   treeshake: true,
-  env: {
-    NODE_ENV: process.env.NODE_ENV || 'production',
-  },
+  outExtension: () => ({
+    js: '.js'  // Ensure consistent extensions
+  }),
+  // Bundle format configuration
+  esbuildOptions(options) {
+    options.mainFields = ['module', 'main']
+    options.conditions = ['require', 'node']
+  }
 })

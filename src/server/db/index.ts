@@ -3,17 +3,28 @@ import { BaseEntitiesMap } from "./entities";
 
 export class DataBase {
   stored_entities: (Function | string | EntitySchema)[] = []
-  type = 'mysql' as 'mysql' | 'postgres'
+  type = 'none' as 'mysql' | 'postgres' | 'none'
   _ds: DataSource | null = null
 
-  constructor( 
-    type: 'mysql' | 'postgres'
+  constructor( {
+    type = 'postgres'
+  } : {
+    type: 'mysql' | 'postgres' | 'none'
+  }
   ){ 
+    if(type === 'none') {
+      return
+    }
+
     this.type = type
     this.stored_entities = BaseEntitiesMap
   }
 
   async start() {
+    if(this.type === 'none') {
+      throw new Error('VRage: Database type is not defined')
+    }
+
     this._ds = new DataSource({
       type: this.type,
       entities: this.stored_entities,

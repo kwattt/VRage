@@ -3,9 +3,10 @@ import { DataBase } from "../db";
 declare global {
   namespace VRage {
     interface Server {
-      create: (type: 'postgres' | 'mysql' | 'none') => void;
-      launch: () => Promise<void>;
-      Database: DataBase | null;
+      Database: DataBase
+      Core: {
+        launch: () => Promise<void>;
+      }
     }
   }
 }

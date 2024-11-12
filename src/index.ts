@@ -5,8 +5,8 @@ import type { ClientType } from './client/types';
 
 // Export all the modules
 export * from './shared';
-export * from './server';
-export * from './client';
+export * as Server from './server';
+export * as Client from './client';
 
 // Define global types for your library
 declare global {
@@ -18,5 +18,6 @@ declare global {
     }
   }
 }
+
 
 export {};
