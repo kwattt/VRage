@@ -1,9 +1,15 @@
-import {Account, DataBase, Server} from 'vrage/dist/server'
+import '@ragempcommunity/types-server';
+
+// Just define mp globally before any imports
+(global as any).mp = {};
+
+
+import {Account, Server} from '../dist/server'
+
 import dotenv from 'dotenv'
 import { BaseEntity, Column, Entity, 
         JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 dotenv.config()
-
 
 describe('Database simple', function() {
   afterAll(async () => {

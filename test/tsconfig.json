@@ -9,6 +9,7 @@
         // fix  possibly 'undefined' error
         "strictNullChecks": false,
         "esModuleInterop": true
+        
     },
     "include": ["./**/*.ts"]
 }

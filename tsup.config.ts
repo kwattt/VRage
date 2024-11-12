@@ -1,10 +1,11 @@
 import { defineConfig } from 'tsup'
 
 export default defineConfig({
-  format: ['cjs'],  // RageMP uses CommonJS, so we can remove ESM
+  format: ['cjs'],
   entry: {
+    'index': 'src/index.ts',
     'client/index': 'src/client/index.ts',
-    'server/index': 'src/server/index.ts',
+    'server/index': 'src/server/index.ts'
   },
   dts: true,
   target: 'es2016',
@@ -14,11 +15,11 @@ export default defineConfig({
   splitting: false,
   treeshake: true,
   outExtension: () => ({
-    js: '.js'  // Ensure consistent extensions
+    js: '.js'
   }),
-  // Bundle format configuration
   esbuildOptions(options) {
-    options.mainFields = ['module', 'main']
-    options.conditions = ['require', 'node']
+    options.mainFields = ['main', 'module']
+    options.conditions = ['require', 'node', 'default']
+    options.resolveExtensions = ['.js', '.ts']
   }
 })

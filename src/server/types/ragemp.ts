@@ -1,5 +1,5 @@
-import '@ragempcommunity/types-server'
 
+import '@ragempcommunity/types-server'
 import { VPlayer } from "./player"
 
 declare global {

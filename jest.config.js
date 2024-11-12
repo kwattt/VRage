@@ -5,6 +5,9 @@ module.exports = {
   transform: {
     '^.+\\.tsx?$': 'ts-jest',
   },
+  transformIgnorePatterns: [
+    '/node_modules/(?!(@ragempcommunity/types-server)/)'
+  ],
   testMatch: ['**/?(*.)+(spec|test).ts?(x)'],
   // decorators
   moduleNameMapper: {

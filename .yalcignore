@@ -1,0 +1,4 @@
+/*               # Exclude all files and folders at the root level
+!/dist          # Include only the dist folder
+!package.json   # Ensure package.json is included for package metadata
+!README.md      # (Optional) Include README if needed
