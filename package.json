@@ -5,16 +5,18 @@
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/@kwattt"
   },
-  "exports": {
-    "./client": {
-      "require": "./dist/client/index.js",
-      "types": "./dist/client/index.d.ts"
-    },
-    "./server": {
-      "require": "./dist/server/index.js",
-      "types": "./dist/server/index.d.ts"
-    }
+"exports": {
+  "./client": {
+    "require": "./dist/client/index.js",
+    "default": "./dist/client/index.js",
+    "types": "./dist/client/index.d.ts"
   },
+  "./server": {
+    "require": "./dist/server/index.js",
+    "default": "./dist/server/index.js",
+    "types": "./dist/server/index.d.ts"
+  }
+},
   "files": [
     "dist",
     "README.md"
