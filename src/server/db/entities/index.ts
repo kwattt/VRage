@@ -1,6 +1,8 @@
-import { BaseAccount } from "./account";
+import { EntitySchema } from "typeorm";
+import { Account } from "./account";
 
-export const baseEntities = [BaseAccount]
-export const baseEntitiesMap = {
-  BaseAccount
+export const BaseEntitiesMap: (Function | string | EntitySchema)[] = [Account];
+// return full Class, not only type
+export const BaseEntities = {
+  Account: Account
 }

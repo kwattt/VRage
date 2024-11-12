@@ -6,5 +6,7 @@
     "emitDecoratorMetadata": true
   },
   // add experimentalDecorators 
-  "include": ["./**/*.ts"]
+  "include": [
+    "./**/*.ts",
+  ]
 }

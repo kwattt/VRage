@@ -1,4 +1,8 @@
+// src/client/index.ts
+export * from './types'
 
-export const testFunctionClient = () => {
-  console.log('Hello from the client!')
-}
+export const Client: VRage.Client = {
+  testFunction: () => {
+    // implementation
+  }
+};

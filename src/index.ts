@@ -1,11 +1,22 @@
-import { DB } from './server/db';
-import { EntityManager } from './server/db/manager';
-import { Server } from './server';
+// src/index.ts
 
-export const VRage = {
-  Client: {},
-  Server: Server,
-};
+import type { ServerType } from './server/types';
+import type { ClientType } from './client/types';
 
-export { DB, EntityManager, Server };
-export * from './server/types';
+// Export all the modules
+export * from './shared';
+export * from './server';
+export * from './client';
+
+// Define global types for your library
+declare global {
+  namespace VRage {
+    // Define the shape of your global types
+    interface Types {
+      Server: ServerType;
+      Client: ClientType;
+    }
+  }
+}
+
+export {};

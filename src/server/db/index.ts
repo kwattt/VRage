@@ -1,37 +1,40 @@
-import "reflect-metadata";
+import {  DataSource, EntitySchema } from "typeorm";
+import { BaseEntitiesMap } from "./entities";
 
-import { DataSource } from "typeorm";
-import { EntityManager } from "./manager";
+export class DataBase {
+  stored_entities: (Function | string | EntitySchema)[] = []
+  type = 'mysql' as 'mysql' | 'postgres'
+  _ds: DataSource | null = null
 
-export class DB {
-  private dataSource: DataSource;
-  private type: 'postgres' | 'mysql';
-
-  constructor(type: 'postgres' | 'mysql') {
-    this.type = type;
+  constructor( 
+    type: 'mysql' | 'postgres'
+  ){ 
+    this.type = type
+    this.stored_entities = BaseEntitiesMap
   }
 
-  getDataSource() {
-    return this.dataSource;
-  }
-
-  init = async () => {
-    const all_entities = EntityManager.getAllEntities();
-
-    this.dataSource = new DataSource({
-      url: process.env.DATABASE_URL,
+  async start() {
+    this._ds = new DataSource({
       type: this.type,
-      entities: all_entities,
+      entities: this.stored_entities,
       synchronize: true,
-    });
-
-    const connection = await this.dataSource.initialize();
-    return connection;
+      url: process.env.DATABASE_URL!
+    })
+    await this._ds.initialize()
   }
 
-  close = async () => {
-    if (this.dataSource.isInitialized) {
-      await this.dataSource.destroy();
+  async close() {
+    if(!this._ds) {
+      throw new Error('VRage: Database was not started before closing')
     }
+    await this._ds.destroy()
+  }
+
+  registerEntity(entity: (Function | string | EntitySchema)) {
+    this.stored_entities.push(entity)
+  }
+
+  get entities() {
+    return this.stored_entities
   }
 }

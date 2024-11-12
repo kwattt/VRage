@@ -1,30 +1,39 @@
-import {  PrimaryGeneratedColumn, Column, TableInheritance, UpdateDateColumn, BeforeInsert, BaseEntity } from 'typeorm';
-import * as bcrypt from 'bcryptjs';
-import { ExtendableEntity } from '../decorators';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  BeforeInsert,
+  BaseEntity,
+} from "typeorm"
 
-@ExtendableEntity()
-export class BaseAccount extends BaseEntity {
+import * as bcrypt from 'bcryptjs'
+
+@Entity()
+export class Account extends BaseEntity {
   @PrimaryGeneratedColumn()
-  id: number;
+  id: number
 
-  @Column()
-  name: string;
+  @Column({
+    unique: true,
+  })
+  name: string = ''
 
-  @Column()
-  email: string;
-
-  @Column({ nullable: false })
-  password: string = '';
-
-  @UpdateDateColumn()
-  last_update: Date;
+  @Column({
+    nullable: false
+  })
+  password: string = ''
 
   @BeforeInsert()
-  protected async hashPassword() {
-    this.password = await bcrypt.hash(this.password, 10);
+  async hashPassword() {
+    this.password = await bcrypt.hash(this.password, 10)
   }
 
   async checkPassword(password: string) {
-    return await bcrypt.compare(password, this.password);
+    return await bcrypt.compare(password, this.password)
   }
+
+  @Column({
+    default: 0
+  })
+  admin: number = 0
 }
