@@ -371,12 +371,32 @@ class CommandManager {
 
 const commandManager = new CommandManager();
 
-export const commandPlugin = createPlugin({
+export interface CommandPlugin {
+  name: string;
+  version: string;
+  events: ReturnType<typeof createEventHandler>[];
+  add: CommandManager['add'];
+  remove: CommandManager['remove'];
+  find: CommandManager['find'];
+  getNames: CommandManager['getNames'];
+  getCategories: CommandManager['getCategories'];
+  getByCategory: CommandManager['getByCategory'];
+  getNamesWithAliases: CommandManager['getNamesWithAliases'];
+  getWithDescription: CommandManager['getWithDescription'];
+  addPermission: CommandManager['addPermission'];
+  removePermission: CommandManager['removePermission'];
+  getPermissions: CommandManager['getPermissions'];
+  addCategory: CommandManager['addCategory'];
+  getCategory: CommandManager['getCategory'];
+  removeCategory: CommandManager['removeCategory'];
+  initialize: () => void;
+}
+
+export const commandPlugin = createPlugin<CommandPlugin>({
   name: 'vrage-commands',
   version: 'base',
 
   events: [
-      // Bind the methods to the commandManager instance
       createEventHandler('playerCommand', (player: PlayerMp, message: string) => {
           return commandManager.processCommand(player, message);
       }),
@@ -385,9 +405,24 @@ export const commandPlugin = createPlugin({
       })
   ],
   
+  // Explicitly type all methods
+  add: commandManager.add.bind(commandManager),
+  remove: commandManager.remove.bind(commandManager),
+  find: commandManager.find.bind(commandManager),
+  getNames: commandManager.getNames.bind(commandManager),
+  getCategories: commandManager.getCategories.bind(commandManager),
+  getByCategory: commandManager.getByCategory.bind(commandManager),
+  getNamesWithAliases: commandManager.getNamesWithAliases.bind(commandManager),
+  getWithDescription: commandManager.getWithDescription.bind(commandManager),
+  addPermission: commandManager.addPermission.bind(commandManager),
+  removePermission: commandManager.removePermission.bind(commandManager),
+  getPermissions: commandManager.getPermissions.bind(commandManager),
+  addCategory: commandManager.addCategory.bind(commandManager),
+  getCategory: commandManager.getCategory.bind(commandManager),
+  removeCategory: commandManager.removeCategory.bind(commandManager),
+
   initialize() {
-      // Add default commands
-      commandManager.add({
+      this.add({
           name: 'help',
           description: 'Shows a list of available commands',
           run(player, command) {
@@ -406,23 +441,12 @@ export const commandPlugin = createPlugin({
           }
       });
 
-      commandManager.add({
+      this.add({
           name: 'commands',
-          aliases: ['cmds'],
           description: 'Shows a list of available commands by category',
           run(player, fullText, category) {
               const commands = commandManager.getByCategory(category);
               const message = commands.map(cmd => `/${cmd}`).join('\n');
-              player.outputChatBox(message);
-          }
-      });
-
-      commandManager.add({
-          name: 'categories',
-          description: 'Shows a list of available command categories',
-          run(player) {
-              const categories = commandManager.getCategories();
-              const message = categories.map(cat => `${cat.name} - ${cat.id}`).join('\n');
               player.outputChatBox(message);
           }
       });
@@ -432,6 +456,7 @@ export const commandPlugin = createPlugin({
       }, 500);
   }
 });
+
 
 declare global {
   interface Plugins {

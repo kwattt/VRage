@@ -30,7 +30,6 @@ export class PluginManager{
     console.log('Registering plugin', plugin.name);
     
     if (this.plugins.has(plugin.name)) {
-      console.log('Plugin map state:', this.plugins);
       throw new Error(`Plugin ${plugin.name} is already registered`);
     }
 

@@ -26,10 +26,6 @@ export const chatPlugin = createPlugin({
       chatInstance.handleChat(player, message);
     })
   ],
-
-  initialize: () => {
-    console.log('Chat plugin initialized');
-  },
 });
 
 declare global {

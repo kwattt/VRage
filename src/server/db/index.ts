@@ -30,14 +30,10 @@ export class DataBase {
     if(this.type === 'none') {
       throw new Error('VRage: Database type is not defined')
     }
+    this._ds = new DataSource(config || this.defaultDataSourceConfig)
+    await this._ds.initialize()
 
-    new Promise<void>(async (resolve, reject) => {
-      this._ds = new DataSource(config || this.defaultDataSourceConfig)
-  
-      await this._ds.initialize().then(() => {
-        mp.events.call('v-onDatabaseLoad')
-      })
-    })
+    mp.events.call('v-onDatabaseLoad')
   }
 
   get defaultDataSourceConfig() {

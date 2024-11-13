@@ -13,7 +13,3 @@ export {
 }
 
 export * from './server'
-
-mp.events.add('packagesLoaded', () => {
-  console.log('V-RAGE event: Server packages loaded')
-})

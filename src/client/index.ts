@@ -6,7 +6,3 @@ export const Client: VRage.Client = {
     // implementation
   }
 };
-
-mp.events.add('entityStreamIn', () => {
-  console.log('V-RAGE event: Client packages loaded')
-})

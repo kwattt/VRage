@@ -13,7 +13,8 @@ export class VRageServer implements VRage.Server {
     database: { type: 'postgres' },
     plugins: [chatPlugin, commandPlugin]
   }) {
-    this.Database = new DataBase(config.database || { type: 'none' });
+
+    this.Database = new DataBase(config.database || { type: 'postgres' });
 
     this.PluginManager = new PluginManager(this.Database);
     
@@ -26,13 +27,9 @@ export class VRageServer implements VRage.Server {
 
   public Core = {
     launch: async (config?: DataSourceOptions): Promise<void> => {
-      new Promise<void>(async (resolve, reject) => {
-        if (this.Database.type !== 'none') {
-          await this.Database.start(config).then(() => {
-            resolve();
-          })
-        }
-      });
+      if (this.Database.type !== 'none') {
+        await this.Database.start(config)
+      }
     },
 
     shutdown: async (): Promise<void> => {
