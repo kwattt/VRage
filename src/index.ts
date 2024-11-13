@@ -1,6 +1,3 @@
-// src/index.ts
-
-import type { ServerType } from './server/types';
 import type { ClientType } from './client/types';
 
 // Export all the modules
@@ -13,11 +10,10 @@ declare global {
   namespace VRage {
     // Define the shape of your global types
     interface Types {
-      Server: ServerType;
+      Server: VRage.Server;
       Client: ClientType;
     }
   }
 }
-
 
 export {};

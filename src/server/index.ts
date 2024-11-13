@@ -8,12 +8,11 @@ import { DataBase } from './db';
 export {
   Account
 }
-
-import { Server } from './server';
 export {
-  Server,
-  DataBase
+  DataBase,
 }
+
+export * from './server'
 
 mp.events.add('packagesLoaded', () => {
   console.log('V-RAGE event: Server packages loaded')
