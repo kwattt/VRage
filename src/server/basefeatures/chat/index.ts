@@ -1,15 +1,39 @@
-import { createEventHandler, createPlugin, PluginManager } from "src/server/features";
+import { createEventHandler, createPlugin } from "src/server/features";
+
+class ChatPluginClass {
+  messageHistory: string[] = [];
+
+  formatMessage(player: any, message: string): string {
+    return `${player.name}: ${message}`;
+  }
+
+  handleChat(player: any, message: string): void {
+    const formattedMessage = this.formatMessage(player, message);
+    this.messageHistory.push(formattedMessage);
+    mp.players.broadcast(formattedMessage);
+  }
+}
+
+const chatInstance = new ChatPluginClass();
 
 export const chatPlugin = createPlugin({
-  name: 'chat',
+  name: 'vrage-chat',
   version: 'base',
+  messageHistory: chatInstance.messageHistory,
+  
   events: [
     createEventHandler('playerChat', (player, message) => {
-      mp.players.broadcast(`${player.name}: ${message}`)
-    }),
+      chatInstance.handleChat(player, message);
+    })
   ],
 
   initialize: () => {
-    console.log('Chat plugin initialized')
+    console.log('Chat plugin initialized');
+  },
+});
+
+declare global {
+  export interface Plugins {
+    'vrage-chat': typeof chatPlugin
   }
-})
+}

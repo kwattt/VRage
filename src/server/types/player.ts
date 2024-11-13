@@ -4,6 +4,7 @@ export interface VPlayer {
   account: {
     loggedIn: boolean
     dbAccount?: Account
+    admin: number
   }
 }
 

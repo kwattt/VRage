@@ -1,5 +1,11 @@
-import {  DataSource, EntitySchema } from "typeorm";
+import {  DataSource, DataSourceOptions, EntitySchema } from "typeorm";
 import { BaseEntitiesMap } from "./entities";
+
+declare global {
+  interface IServerEvents {
+    'v-onDatabaseLoad': () => void
+  }
+}
 
 export class DataBase {
   stored_entities: (Function | string | EntitySchema)[] = []
@@ -20,18 +26,26 @@ export class DataBase {
     this.stored_entities = BaseEntitiesMap
   }
 
-  async start() {
+  async start(config?: DataSourceOptions) {
     if(this.type === 'none') {
       throw new Error('VRage: Database type is not defined')
     }
 
-    this._ds = new DataSource({
+    new Promise<void>(async (resolve, reject) => {
+      this._ds = new DataSource(config || this.defaultDataSourceConfig)
+  
+      await this._ds.initialize().then(() => {
+        mp.events.call('v-onDatabaseLoad')
+      })
+    })
+  }
+
+  get defaultDataSourceConfig() {
+    return {
       type: this.type,
       entities: this.stored_entities,
-      synchronize: true,
       url: process.env.DATABASE_URL!
-    })
-    await this._ds.initialize()
+    } as DataSourceOptions
   }
 
   async close() {

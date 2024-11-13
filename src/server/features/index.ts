@@ -1,4 +1,6 @@
-import { EventName, BasePlugin, Plugin } from "./types";
+import { EntitySchema } from "typeorm";
+import { DataBase } from "../db";
+import { EventName, BasePlugin, Plugin, ExtendedPlugin } from "./types";
 
 export function createEventHandler<T extends EventName>(
   event: T,
@@ -9,22 +11,42 @@ export function createEventHandler<T extends EventName>(
   return { event, handler };
 }
 
-export class PluginManager<TPluginMap extends Record<string, Plugin> = {}> {
+declare global {
+  export interface Plugins {}
+}
+
+export class PluginManager{
   private plugins = new Map<string, Plugin>();
   private eventHandlers = new Map<EventName, Map<Plugin, Array<ReturnType<typeof createEventHandler>>>>();
+  private database: DataBase;
 
-  async registerPlugin<
-    TName extends string,
-    TPlugin extends Plugin
-  >(
-    plugin: TPlugin & { name: TName }
-  ): Promise<PluginManager<TPluginMap & Record<TName, TPlugin>>> {
+  constructor(database: DataBase) {
+    this.database = database;
+  }
+
+  async registerPlugin(
+    plugin: Plugin
+  ) {
     console.log('Registering plugin', plugin.name);
     
     if (this.plugins.has(plugin.name)) {
       console.log('Plugin map state:', this.plugins);
       throw new Error(`Plugin ${plugin.name} is already registered`);
     }
+
+    // Register entities if the plugin has any
+    if (plugin.entities && plugin.entities.length > 0) {
+      for (const entity of plugin.entities) {
+        await this.registerEntity(entity);
+      }
+    }
+
+    // Bind all methods to the plugin instance
+    Object.entries(plugin).forEach(([key, value]) => {
+      if (typeof value === 'function') {
+        (plugin as any)[key] = value.bind(plugin);
+      }
+    });
 
     this.plugins.set(plugin.name, plugin);
 
@@ -37,18 +59,25 @@ export class PluginManager<TPluginMap extends Record<string, Plugin> = {}> {
     if (plugin.initialize) {
       await plugin.initialize();
     }
-
-    return this as unknown as PluginManager<TPluginMap & Record<TName, TPlugin>>;
   }
 
-  getPlugin<TName extends keyof TPluginMap>(
+  private async registerEntity(entity: Function | string | EntitySchema) {
+    this.database.registerEntity(entity);
+  }
+  
+  getPlugin<TName extends keyof Plugins>(
     name: TName
-  ): TPluginMap[TName] {
+  ): Plugins[TName] {
     const plugin = this.plugins.get(name as string);
     if (!plugin) {
       throw new Error(`Plugin ${String(name)} not found`);
     }
-    return plugin as TPluginMap[TName];
+
+    return plugin as Plugins[TName];
+  }
+
+  getPlugins(): Map<string, Plugin> {
+    return this.plugins;
   }
 
   isPluginRegistered(name: string): boolean {
@@ -69,9 +98,14 @@ export class PluginManager<TPluginMap extends Record<string, Plugin> = {}> {
     }
 
     const handlers = eventMap.get(plugin)!;
-    handlers.push(handler);
+    // Bind the handler to the plugin instance
+    const boundHandler = {
+      ...handler,
+      handler: handler.handler.bind(plugin)
+    };
+    handlers.push(boundHandler);
 
-    mp.events.add(handler.event, handler.handler);
+    mp.events.add(handler.event, boundHandler.handler);
   }
 
   async unregisterEventHandler(
@@ -103,7 +137,7 @@ export class PluginManager<TPluginMap extends Record<string, Plugin> = {}> {
     }
   }
 
-  async unloadPlugin<TName extends keyof TPluginMap>(
+  async unloadPlugin<TName extends keyof Plugins>(
     pluginName: TName
   ): Promise<void> {
     const plugin = this.plugins.get(pluginName as string);
@@ -125,21 +159,31 @@ export class PluginManager<TPluginMap extends Record<string, Plugin> = {}> {
   }
 }
 
-export function createPlugin<T extends Record<string, any>>(
-  config: {
-    name: string;
-    version?: string;
-    events?: ReturnType<typeof createEventHandler>[];
-    initialize?: () => Promise<void> | void;
-    destroy?: () => Promise<void> | void;
-  } & T
-): Plugin<T> {
+export function createPlugin<T extends Record<string, any> = {}>(
+  config: BasePlugin & T
+): ExtendedPlugin<T> {
+  const { name, version, events, initialize, destroy, ...rest } = config;
+  
+  // Separate methods and properties
+  const methods: Record<string, Function> = {};
+  const properties: Record<string, any> = {};
+  
+  Object.entries(rest).forEach(([key, value]) => {
+    if (typeof value === 'function') {
+      methods[key] = value;
+    } else {
+      properties[key] = value;
+    }
+  });
+
   return {
-    name: config.name,
-    version: config.version || '1.0.0',
-    events: config.events || [],
-    initialize: config.initialize,
-    destroy: config.destroy,
-    ...config
-  };
+    name,
+    version: version || '1.0.0',
+    events: events || [],
+    initialize,
+    destroy,
+    methods,
+    properties,
+    ...rest
+  } as ExtendedPlugin<T>;
 }

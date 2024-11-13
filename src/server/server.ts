@@ -1,6 +1,9 @@
+export * from './basefeatures'
+import { DataSourceOptions } from 'typeorm';
 import { chatPlugin } from './basefeatures/chat';
 import { DataBase } from './db'
 import { PluginManager } from './features';
+import { commandPlugin } from './basefeatures';
 
 export class VRageServer implements VRage.Server {
   public Database: DataBase;
@@ -8,10 +11,11 @@ export class VRageServer implements VRage.Server {
   
   constructor(config: VRage.ServerConfig = {
     database: { type: 'postgres' },
-    plugins: [chatPlugin]
+    plugins: [chatPlugin, commandPlugin]
   }) {
     this.Database = new DataBase(config.database || { type: 'none' });
-    this.PluginManager = new PluginManager();
+
+    this.PluginManager = new PluginManager(this.Database);
     
     if (config.plugins) {
       config.plugins.forEach(plugin => {
@@ -21,10 +25,14 @@ export class VRageServer implements VRage.Server {
   }
 
   public Core = {
-    launch: async (): Promise<void> => {
-      if (this.Database.type !== 'none') {
-        await this.Database.start();
-      }
+    launch: async (config?: DataSourceOptions): Promise<void> => {
+      new Promise<void>(async (resolve, reject) => {
+        if (this.Database.type !== 'none') {
+          await this.Database.start(config).then(() => {
+            resolve();
+          })
+        }
+      });
     },
 
     shutdown: async (): Promise<void> => {
@@ -37,10 +45,6 @@ export class VRageServer implements VRage.Server {
   static create(config?: VRage.ServerConfig): VRage.Server {
     return new VRageServer(config);
   }
-}
-
-export const BasePlugins = {
-  chatPlugin
 }
 
 export * from './types/index';
