@@ -1,5 +1,3 @@
-import { EntitySchema } from "typeorm";
-import { DataBase } from "../db";
 import { EventName, BasePlugin, Plugin, ExtendedPlugin } from "./types";
 
 export function createEventHandler<T extends EventName>(
@@ -12,17 +10,12 @@ export function createEventHandler<T extends EventName>(
 }
 
 declare global {
-  export interface Plugins {}
+  export interface VPlugins {}
 }
 
 export class PluginManager{
   private plugins = new Map<string, Plugin>();
   private eventHandlers = new Map<EventName, Map<Plugin, Array<ReturnType<typeof createEventHandler>>>>();
-  private database: DataBase;
-
-  constructor(database: DataBase) {
-    this.database = database;
-  }
 
   async registerPlugin(
     plugin: Plugin
@@ -31,13 +24,6 @@ export class PluginManager{
     
     if (this.plugins.has(plugin.name)) {
       throw new Error(`Plugin ${plugin.name} is already registered`);
-    }
-
-    // Register entities if the plugin has any
-    if (plugin.entities && plugin.entities.length > 0) {
-      for (const entity of plugin.entities) {
-        await this.registerEntity(entity);
-      }
     }
 
     // Bind all methods to the plugin instance
@@ -55,24 +41,24 @@ export class PluginManager{
       }
     }
 
+    if(plugin.databaseload){
+      this.registerEventHandler(plugin, createEventHandler('v-onDatabaseLoad', plugin.databaseload));
+    }
+
     if (plugin.initialize) {
       await plugin.initialize();
     }
   }
-
-  private async registerEntity(entity: Function | string | EntitySchema) {
-    this.database.registerEntity(entity);
-  }
   
-  getPlugin<TName extends keyof Plugins>(
+  getPlugin<TName extends keyof VPlugins>(
     name: TName
-  ): Plugins[TName] {
+  ): VPlugins[TName] {
     const plugin = this.plugins.get(name as string);
     if (!plugin) {
       throw new Error(`Plugin ${String(name)} not found`);
     }
 
-    return plugin as Plugins[TName];
+    return plugin as VPlugins[TName];
   }
 
   getPlugins(): Map<string, Plugin> {
@@ -136,7 +122,7 @@ export class PluginManager{
     }
   }
 
-  async unloadPlugin<TName extends keyof Plugins>(
+  async unloadPlugin<TName extends keyof VPlugins>(
     pluginName: TName
   ): Promise<void> {
     const plugin = this.plugins.get(pluginName as string);
@@ -148,6 +134,10 @@ export class PluginManager{
       for (const handler of plugin.events) {
         await this.unregisterEventHandler(plugin, handler.event, handler);
       }
+    }
+
+    if(plugin.databaseload){
+      await this.unregisterEventHandler(plugin, 'v-onDatabaseLoad');
     }
 
     if (plugin.destroy) {

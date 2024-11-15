@@ -1,10 +1,12 @@
 
 import '@ragempcommunity/types-server'
-import { VPlayer } from "./player"
+import { AccountTable } from '../basefeatures/account'
 
 declare global {
   interface PlayerMp {
-    v: VPlayer
+    v: {
+      account: AccountTable
+    }
   }
 }
 

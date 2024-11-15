@@ -1,22 +1,20 @@
 export * from './basefeatures'
-import { DataSourceOptions } from 'typeorm';
-import { chatPlugin } from './basefeatures/chat';
-import { DataBase } from './db'
+import { DB, vdb } from './db'
+
 import { PluginManager } from './features';
-import { commandPlugin } from './basefeatures';
+import { commandPlugin, chatPlugin, accountPlugin } from './basefeatures';
 
 export class VRageServer implements VRage.Server {
-  public Database: DataBase;
+  public Database: DB;
   public PluginManager: PluginManager;
   
   constructor(config: VRage.ServerConfig = {
-    database: { type: 'postgres' },
-    plugins: [chatPlugin, commandPlugin]
+    database: { type: 'postgres'},
+    plugins: [chatPlugin, commandPlugin, accountPlugin]
   }) {
+    this.Database = vdb;
 
-    this.Database = new DataBase(config.database || { type: 'postgres' });
-
-    this.PluginManager = new PluginManager(this.Database);
+    this.PluginManager = new PluginManager();
     
     if (config.plugins) {
       config.plugins.forEach(plugin => {
@@ -26,15 +24,15 @@ export class VRageServer implements VRage.Server {
   }
 
   public Core = {
-    launch: async (config?: DataSourceOptions): Promise<void> => {
-      if (this.Database.type !== 'none') {
-        await this.Database.start(config)
-      }
+    launch: async (config?: {
+      type: 'postgres' | 'mysql' | 'none',
+    }): Promise<void> => {
+      this.Database.start(config ? config : { type: 'postgres' });
     },
 
     shutdown: async (): Promise<void> => {
       if (this.Database.type !== 'none') {
-        await this.Database.close();
+        this.Database.close();
       }
     }
   };
@@ -43,7 +41,3 @@ export class VRageServer implements VRage.Server {
     return new VRageServer(config);
   }
 }
-
-export * from './types/index';
-export * from './types/player';
-export * from './types/ragemp';

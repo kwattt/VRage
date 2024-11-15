@@ -48,10 +48,12 @@ export interface Command {
 
 // src/server/basefeatures/commands/manager.ts
 class CommandManager {
-  notFoundMessageEnabled: boolean = false;
+  notFoundMessageEnabled: boolean = true;
   permissions: Map<string, AdminPermission> = new Map();
   categories: Map<string, CommandCategory> = new Map();
   
+  notFoundMessage: string = '!{Red}Error: !{White}Unknown command. Use /help to see a list of available commands.';
+
   private _commands: Map<string, Command> = new Map();
   private _aliasToCommand: Map<string, string> = new Map();
   private _categoryCommands: Map<string, Set<string>> = new Map();
@@ -87,8 +89,8 @@ class CommandManager {
     const commandName = args.shift()!;
     const command = this.find(commandName);
 
-    if (!command) {
-        return player.outputChatBox(`Error: Unknown command "${commandName}"`);
+    if (!command && this.notFoundMessageEnabled) {
+        return player.outputChatBox(`${this.notFoundMessageEnabled}`);
     }
 
     const fullText = message.substring(commandName.length + 1);
@@ -459,7 +461,7 @@ export const commandPlugin = createPlugin<CommandPlugin>({
 
 
 declare global {
-  interface Plugins {
+  interface VPlugins {
     'vrage-commands': typeof commandPlugin;
   }
   interface IServerEvents {

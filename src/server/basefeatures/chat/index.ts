@@ -29,7 +29,7 @@ export const chatPlugin = createPlugin({
 });
 
 declare global {
-  export interface Plugins {
+  export interface VPlugins {
     'vrage-chat': typeof chatPlugin
   }
 }

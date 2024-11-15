@@ -1,5 +1,4 @@
-import { DataSourceOptions } from "typeorm";
-import { DataBase } from "../db";
+import { DB } from "../db";
 import { PluginManager } from "../features";
 import { Plugin } from "../features/types";
 
@@ -14,13 +13,16 @@ declare global {
       plugins?: Plugin[];
     }
 
-    export interface Plugins {}
+    export interface VDatabaseTables {}
+    export interface VPlugins {}
 
     interface Server {
-      Database: DataBase;
+      Database: DB;
       PluginManager: PluginManager;
       Core: {
-        launch: (config?: DataSourceOptions) => Promise<void>;
+        launch: (config?: {
+          type: 'postgres' | 'mysql' | 'none';
+        }) => Promise<void>;
         shutdown: () => Promise<void>;
       };
     }

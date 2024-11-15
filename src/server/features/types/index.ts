@@ -1,4 +1,3 @@
-import { EntitySchema } from "typeorm";
 import { createEventHandler } from "..";
 
 export type EventName = keyof IServerEvents | (string & {});
@@ -8,7 +7,7 @@ export interface BasePlugin {
   version: string;
   initialize?: () => Promise<void> | void;
   destroy?: () => Promise<void> | void;
-  entities?: (Function | string | EntitySchema)[];
+  databaseload? : () => Promise<void> | void;
   events?: ReturnType<typeof createEventHandler>[];
 }
 
