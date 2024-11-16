@@ -18,6 +18,18 @@ export class PluginManager{
   private eventHandlers = new Map<EventName, Map<Plugin, Array<ReturnType<typeof createEventHandler>>>>();
 
   async registerPlugin(
+    plugin: Plugin | Plugin[]
+  ) {
+    if (Array.isArray(plugin)) {
+      for (const p of plugin) {
+        await this.registerPluginInit(p);
+      }
+    } else {
+      await this.registerPluginInit(plugin);
+    }
+  }
+
+  async registerPluginInit(
     plugin: Plugin
   ) {
     console.log('Registering plugin', plugin.name);
@@ -151,7 +163,7 @@ export class PluginManager{
 export function createPlugin<T extends Record<string, any> = {}>(
   config: BasePlugin & T
 ): ExtendedPlugin<T> {
-  const { name, version, events, initialize, destroy, ...rest } = config;
+  const { name, version, events, initialize, destroy, databaseload, ...rest } = config;
   
   // Separate methods and properties
   const methods: Record<string, Function> = {};
@@ -169,6 +181,7 @@ export function createPlugin<T extends Record<string, any> = {}>(
     name,
     version: version || '1.0.0',
     events: events || [],
+    databaseload,
     initialize,
     destroy,
     methods,

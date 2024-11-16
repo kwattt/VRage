@@ -1,4 +1,4 @@
-import { createEventHandler, createPlugin } from "src/server/features";
+import { createEventHandler, createPlugin } from "../../plugins";
 
 class ChatPluginClass {
   messageHistory: string[] = [];

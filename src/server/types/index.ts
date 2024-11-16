@@ -1,6 +1,11 @@
+// src/server/types/index.ts
+export * from './ragemp';
+export * from '../plugins/types';
+export * from '../baseplugins/account/types';
+
 import { DB } from "../db";
-import { PluginManager } from "../features";
-import { Plugin } from "../features/types";
+import { PluginManager } from "../plugins";
+import type { Plugin } from "../plugins/types";
 
 declare global {
   namespace VRage {
@@ -13,8 +18,8 @@ declare global {
       plugins?: Plugin[];
     }
 
-    export interface VDatabaseTables {}
-    export interface VPlugins {}
+    interface VDatabaseTables {}
+    interface VPlugins {}
 
     interface Server {
       Database: DB;
@@ -28,3 +33,9 @@ declare global {
     }
   }
 }
+
+// Export type aliases
+export type ServerConfig = VRage.ServerConfig;
+export type Server = VRage.Server;
+export type VDatabaseTables = VRage.VDatabaseTables;
+export type VPlugins = VRage.VPlugins;

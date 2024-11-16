@@ -13,10 +13,30 @@
       "types": "./dist/client/index.d.ts",
       "default": "./dist/client/index.js"
     },
+    "./client/plugins": {
+      "require": "./dist/client/plugins.js",
+      "types": "./dist/client/plugins.d.ts",
+      "default": "./dist/client/plugins.js"
+    },
+    "./client/baseplugins": {
+      "require": "./dist/client/baseplugins.js",
+      "types": "./dist/client/baseplugins.d.ts",
+      "default": "./dist/client/baseplugins.js"
+    },
     "./server": {
       "require": "./dist/server/index.js",
       "types": "./dist/server/index.d.ts",
       "default": "./dist/server/index.js"
+    },
+    "./server/plugins": {
+      "require": "./dist/server/plugins.js",
+      "types": "./dist/server/plugins.d.ts",
+      "default": "./dist/server/plugins.js"
+    },
+    "./server/baseplugins": {
+      "require": "./dist/server/baseplugins.js",
+      "types": "./dist/server/baseplugins.d.ts",
+      "default": "./dist/server/baseplugins.js"
     }
   },
   "typesVersions": {

@@ -1,17 +1,10 @@
-import { ColumnType, Generated, Updateable } from "kysely"
-import { vdb } from "src/server/db"
-import { createPlugin } from "src/server/features"
-import * as bcrypt from 'bcryptjs'
-import { BasePlugin } from "src/server/features/types"
+import { Updateable } from "kysely"
+import { AccountTable } from "./types"
+import { BasePlugin } from "../../plugins/types";
+import { createPlugin } from "../../plugins";
+import { vdb } from "../../db";
 
-export interface AccountTable {
-  id: Generated<number>
-  username: string
-  password: string
-  admin: number
-  email?: string
-  created_at: ColumnType<Date, string | undefined, never>
-}
+import * as bcrypt from 'bcryptjs'
 
 const accplugin = new class AccountPluginClass {
   async createAccount(username: string, password: string, email: string, admin: number) {
@@ -82,7 +75,7 @@ const accplugin = new class AccountPluginClass {
     if(!vdb.db)
       return
 
-    return await vdb.db.selectFrom('account').select(vdb.db.fn.countAll().as("count")).executeTakeFirstOrThrow()
+    return (await vdb.db.selectFrom('account').select(vdb.db.fn.countAll().as("count")).executeTakeFirstOrThrow()).count
   }
 }
 

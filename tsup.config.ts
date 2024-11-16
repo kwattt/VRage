@@ -1,13 +1,25 @@
+// tsup.config.ts
 import { defineConfig } from 'tsup'
 
 export default defineConfig({
   format: ['cjs'],
   entry: {
-    'index': 'src/index.ts',
     'client/index': 'src/client/index.ts',
-    'server/index': 'src/server/index.ts'
+    'client/baseplugins': 'src/client/baseplugins/index.ts',
+    'client/plugins': 'src/client/plugins/index.ts',
+
+    'server/index': 'src/server/index.ts',
+    'server/baseplugins': 'src/server/baseplugins/index.ts',
+    'server/plugins': 'src/server/plugins/index.ts',
   },
-  dts: true,
+  dts: {
+    resolve: true,
+    compilerOptions: {
+      moduleResolution: "node",
+      preserveSymlinks: true,
+      baseUrl: "src",
+    }
+  },
   target: 'es2016',
   platform: 'node',
   shims: true,
@@ -21,5 +33,9 @@ export default defineConfig({
     options.mainFields = ['main', 'module']
     options.conditions = ['require', 'node', 'default']
     options.resolveExtensions = ['.js', '.ts']
+    options.outbase = 'src'
+    options.preserveSymlinks = true
+    // Add this to preserve original export names
+    options.keepNames = true
   }
 })

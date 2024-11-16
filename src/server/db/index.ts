@@ -67,6 +67,7 @@ export const vdb: DB = {
     // try a connection
 
     sql`SELECT 1`.execute(vdb.db).then(() => {
+      console.log('Database connection established')
       mp.events.call('v-onDatabaseLoad')
     })
   },

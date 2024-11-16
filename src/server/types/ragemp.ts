@@ -1,6 +1,6 @@
 
 import '@ragempcommunity/types-server'
-import { AccountTable } from '../basefeatures/account'
+import type { AccountTable } from './index';
 
 declare global {
   interface PlayerMp {
