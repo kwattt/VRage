@@ -1,8 +1,11 @@
 {
   "name": "vrage",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "./dist/server/index.js",
   "types": "./dist/index.d.ts",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
   "exports": {
     ".": {
       "require": "./dist/index.js",
