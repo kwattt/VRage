@@ -4,7 +4,7 @@
   "main": "./dist/server/index.js",
   "types": "./dist/index.d.ts",
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com/@kwattt"
+    "registry": "https://npm.pkg.github.com/kwattt"
   },
   "exports": {
     ".": {
