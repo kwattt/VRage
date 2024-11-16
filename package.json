@@ -1,5 +1,5 @@
 {
-  "name": "vrage",
+  "name": "@kwattt/vrage",
   "version": "0.0.2",
   "main": "./dist/server/index.js",
   "types": "./dist/index.d.ts",
