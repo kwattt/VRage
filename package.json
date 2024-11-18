@@ -59,9 +59,7 @@
   "sideEffects": false,
   "scripts": {
     "test": "jest",
-    "build": "tsup",
-    "typecheck": "tsc --noEmit",
-    "prepublishOnly": "yarn build"
+    "build": "tsup"
   },
   "license": "MIT",
   "keywords": [
@@ -76,6 +74,7 @@
     "@types/bcryptjs": "^2.4.6",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.9.0",
+    "@types/underscore": "^1.13.0",
     "dotenv": "^16.4.5",
     "jest": "^29.7.0",
     "ts-jest": "^29.2.5",
@@ -91,6 +90,7 @@
     "bcryptjs": "^2.4.3",
     "kysely": "^0.27.4",
     "mysql2": "^3.11.4",
-    "pg": "^8.13.1"
+    "pg": "^8.13.1",
+    "underscore": "^1.13.7"
   }
 }

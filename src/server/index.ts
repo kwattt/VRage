@@ -1,44 +1,61 @@
-// src/server/index.ts
-import { DB, vdb } from './db'
+import { vdb } from './db';
 import { PluginManager } from './plugins';
 export * from './types';
+let _server: VRage.Server;
 
-// Export the class as 'Server' for better naming
-export class Server implements VRage.Server {
-  public Database: DB;
-  public PluginManager: PluginManager;
-  
-  constructor(config: VRage.ServerConfig = {
-    database: { type: 'postgres'},
+const Server = {
+  _init(config: VRage.ServerConfig = {
+    database: { type: 'postgres' },
     plugins: []
-  }) {
-    this.Database = vdb;
-    this.PluginManager = new PluginManager();
-    
+  }): VRage.Server {
+    const instance: VRage.Server = {
+      Database: vdb,
+      PluginManager: new PluginManager(),
+      
+      Core: {
+        launch: async (dbConfig?: {
+          type: 'postgres' | 'mysql' | 'none',
+        }): Promise<void> => {
+          instance.Database.start(dbConfig ? dbConfig : { type: 'postgres' });
+        },
+
+        shutdown: async (): Promise<void> => {
+          if (instance.Database.type !== 'none') {
+            instance.Database.close();
+          }
+        }
+      }
+    };
+
     if (config.plugins) {
       config.plugins.forEach(plugin => {
-        this.PluginManager.registerPlugin(plugin);
+        instance.PluginManager.registerPlugin(plugin);
       });
     }
-  }
 
-  public Core = {
-    launch: async (config?: {
-      type: 'postgres' | 'mysql' | 'none',
-    }): Promise<void> => {
-      this.Database.start(config ? config : { type: 'postgres' });
-    },
+    return instance;
+  },
 
-    shutdown: async (): Promise<void> => {
-      if (this.Database.type !== 'none') {
-        this.Database.close();
-      }
+  getInstance(config?: VRage.ServerConfig): VRage.Server {
+    if (!_server) {
+      _server = Server._init(config);
     }
-  };
+    return _server;
+  },
 
-  static create(config?: VRage.ServerConfig): VRage.Server {
-    return new Server(config);
+  configure(config?: VRage.ServerConfig): VRage.Server {
+    _server = Server._init(config);
+    return _server;
+  },
+
+  reset(): void {
+    _server = null;
   }
-}
+};
 
-export {createPlugin} from './plugins';
+mp.events.add('playerReady', (p: PlayerMp) => {
+  p.type
+})
+
+export { _server as VRage, Server };
+export { createPlugin } from './plugins';
