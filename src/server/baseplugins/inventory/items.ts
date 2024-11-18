@@ -1,5 +1,5 @@
 export class Items { 
-  _items: Map<string, VItemData> 
+  _items: Map<string, VItem> 
   constructor(){
     this._items = new Map()
   }
@@ -9,7 +9,7 @@ export class Items {
    * @param data - Item data
    * 
   */
-  add = (data : VItemData) => {
+  add = (data : VItem) => {
     const {hashname, name, description, actions, sprites} = data
 
     if(hashname.length < 1)

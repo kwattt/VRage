@@ -167,15 +167,17 @@ const commandManager = new class CommandManager {
   private checkPermissions(player: PlayerMp, command: Command): boolean {
     if (!command.admin && !command.adminPermissions?.length) return true;
     
-    const hasAdminLevel = !command.admin || 
+    const hasAdminLevel = !command.admin ||
+      // @ts-ignore 
       (player?.v?.account?.admin && player.v.account.admin >= command.admin);
-      
+
     if(command.adminPermissions?.length > 0) {
-        //for (const perm of command.adminPermissions) {
-        //    if (!player?.v?.account?.permissions?.includes(perm)) {
-        //    return false;
-        //    }
-        //}
+        for (const perm of command.adminPermissions) {
+          // @ts-ignore
+          if (!player?.v?.account?.permissions?.includes(perm)) {
+          return false;
+          }
+        }
     }
 
     return hasAdminLevel;

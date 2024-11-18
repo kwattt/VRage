@@ -53,9 +53,5 @@ const Server = {
   }
 };
 
-mp.events.add('playerReady', (p: PlayerMp) => {
-  p.type
-})
-
 export { _server as VRage, Server };
 export { createPlugin } from './plugins';

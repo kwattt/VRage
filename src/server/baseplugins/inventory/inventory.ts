@@ -207,7 +207,6 @@ export class Inventory {
         else 
           data._sprite = itemData.sprites[0]  
       }
-  
 
       if(
         (this.items[slot] === null && this.getInventoryCurrentWeight() + amount*itemData.weight > this.maxWeight) 
@@ -277,7 +276,7 @@ export class Inventory {
     if(!itemData)
       return
 
-    if(itemData.sprites){
+    if(itemData.sprites.length > 0){
       if(!data)
         data = {}
 

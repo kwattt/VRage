@@ -14,7 +14,25 @@ const inventoryPlugin = createPlugin<BasePlugin & {
   version: '1.0.0',
 
   events: [
-    {event: 'playerJoin', handler: (p: PlayerMp) => {p.v._openInv = [undefined, undefined]}},
+    {event: 'playerJoin', handler: (p: PlayerMp) => 
+      { 
+        if(!p.v)
+          // @ts-ignore
+          p.v = {}
+
+        p.v.inv = new InvClass()
+        p.v._openInv = [undefined, undefined]
+        p.v.openInventory = function (name: string, inv: Inventory, canEdit: boolean, maxDistance?: number): boolean {
+          return inventoryPlugin.manager.openInventoryForPlayer(this, name, inv, canEdit, maxDistance);
+        }.bind(p)
+        p.v.closeInventory = function (inv: Inventory) {
+          inventoryPlugin.manager.closeInventoryForPlayer(p, inv);
+        }.bind(p)
+        p.v.hasInventoryOpen = function (inv: Inventory) {
+          return inventoryPlugin.manager.hasInventoryOpen(p, inv);
+        }.bind(p)
+      }
+    },
     {event: 'playerQuit', handler: (p: PlayerMp) => {
       for(const openInv of p.v._openInv) {
         if(openInv){
@@ -40,20 +58,31 @@ export type openInventory = {
 } | undefined
 
 declare global {
-  export interface VEntityMp {
-    inventories?: {
-      [key: string]: Inventory
-    }
-
-    hasInventory: (name: string) => boolean
-    addInventory: (name: string, maxSlots: number, maxWeight: number) => Inventory
-    getInventory: (name: string) => Inventory | undefined
-    removeInventory: (name: string) => void
+  interface VPlayerMp {
+    inv: InvClass
+    openInventory: (name: string, inv: Inventory, canEdit: boolean, maxDistance?: number) => boolean
+    closeInventory: (inv: Inventory) => void
+    hasInventoryOpen: (inv: Inventory) => boolean
+    _openInv: [openInventory, openInventory] 
   }
 
-  interface VPlayerMp {
-    openInventory: (name: string, inv: Inventory, canEdit: boolean, maxDistance?: number) => boolean
-    _openInv: [openInventory, openInventory] 
+  interface VVehicleMp {
+    inv: InvClass
+  }
+  interface VCheckpointMp {
+    inv: InvClass
+  }
+  interface VMarkerMp {
+    inv: InvClass
+  }
+  interface VLabelMp {
+    inv: InvClass
+  }
+  interface VPedMp {
+    inv: InvClass
+  }
+  interface VObjectMp {
+    inv: InvClass
   }
 
   interface VPlugins {
@@ -61,56 +90,63 @@ declare global {
   }
 }
 
-const entityPools = [
-  mp.Player,
-  mp.Vehicle,
-  mp.Blip,
-  mp.Checkpoint,
-  mp.Colshape,
-  mp.Marker,
-  mp.TextLabel,
-  mp.Ped,
-  mp.Object
+const stuffWithNewPools = [
+  mp.vehicles,
+  mp.checkpoints,
+  mp.markers,
+  mp.labels,
+  mp.peds,
+  mp.objects
 ]
 
+for (const pool of stuffWithNewPools) {
+  const _oldmethod = pool.new;
 
-for(const poolObject of entityPools){
-  if(!poolObject.prototype.v){
-    // @ts-ignore
-    poolObject.prototype.v = {}
-  }
+  pool.new = function (this: any, ...args: any[]) {
+      const obj = _oldmethod.apply(this, args);
+      if (!obj.v) {
+          obj.v = {};
+      }
 
-  poolObject.prototype.v.hasInventory = function(name: string){
-    return this.v.inventories?.[name] !== undefined
-  }
+      if (!obj.v.inv) {
+          obj.v.inv = new InvClass();
+      }
 
-  poolObject.prototype.v.addInventory = function(name: string, maxSlots: number, maxWeight: number){
-    if(this.v.inventories?.[name]){
-      return this.v.inventories[name]
-    }
-
-    const inv = new Inventory(undefined, this.type, this.id, maxSlots, maxWeight)
-    this.v.inventories = this.v.inventories || {}
-    this.v.inventories[name] = inv
-    return inv
-  }
-
-  poolObject.prototype.v.getInventory = function(name: string){
-    return this.v.inventories?.[name]
-  }
-
-  poolObject.prototype.v.removeInventory = function(name: string){
-    if(!this.v.inventories?.[name]){
-      invManager.closeInventory(this.v.inventories?.[name])
-      return
-    }
-
-    delete this.v.inventories?.[name]
-  }
+      return obj;
+  } as typeof _oldmethod;
 }
 
-mp.Player.prototype.v.openInventory = function(name: string, inv: Inventory, canEdit: boolean, maxDistance?: number){
-  return invManager.openInventoryForPlayer(this, name, inv, canEdit, maxDistance)
+export class InvClass {
+  inventories: Record<string, Inventory>;
+
+  constructor() {
+      this.inventories = {};
+  }
+
+  hasInventory(name: string): boolean {
+      return this.inventories[name] !== undefined;
+  }
+
+  addInventory(name: string, maxSlots: number, maxWeight: number): Inventory {
+      if (this.inventories[name]) {
+          return this.inventories[name];
+      }
+
+      const inv = new Inventory(undefined, undefined, undefined, maxSlots, maxWeight);
+      this.inventories[name] = inv;
+      return inv;
+  }
+
+  getInventory(name: string): Inventory | undefined {
+      return this.inventories[name];
+  }
+
+  removeInventory(name: string): void {
+      if (this.inventories[name]) {
+          invManager.closeInventory(this.inventories[name]);
+          delete this.inventories[name];
+      }
+  }
 }
 
 export default inventoryPlugin
