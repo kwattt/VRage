@@ -3,13 +3,25 @@ import { defineConfig } from 'tsup'
 
 export default defineConfig({
   format: ['cjs'],
+  // Separate each plugin into its own entry point
   entry: {
     'client/index': 'src/client/index.ts',
-    'client/baseplugins': 'src/client/baseplugins/index.ts',
     'client/plugins': 'src/client/plugins/index.ts',
 
+    //////////
+
+
+
+
     'server/index': 'src/server/index.ts',
-    'server/baseplugins': 'src/server/baseplugins/index.ts',
+    // Individual server baseplugins
+    'server/baseplugins/account': 'src/server/baseplugins/account/index.ts',
+    'server/baseplugins/chat': 'src/server/baseplugins/chat/index.ts',
+    'server/baseplugins/command': 'src/server/baseplugins/command/index.ts',
+    'server/baseplugins/inventory': 'src/server/baseplugins/inventory/index.ts',
+    
+    // Keep the plugin index if needed
+    'server/baseplugins/index': 'src/server/baseplugins/index.ts',
     'server/plugins': 'src/server/plugins/index.ts',
   },
   dts: {
@@ -39,3 +51,4 @@ export default defineConfig({
     options.keepNames = true
   }
 })
+

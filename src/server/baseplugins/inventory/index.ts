@@ -1,3 +1,5 @@
+/// <reference path="../../types/index.ts" />
+
 import { createPlugin } from "../../plugins";
 import { BasePlugin } from "../../plugins/types";
 import { VInventoryType } from "./types";
@@ -5,7 +7,7 @@ import { Inventory } from "./inventory";
 import invManager from "./manager";
 import { ItemPool } from "./items";
 
-const inventoryPlugin = createPlugin<BasePlugin & {
+export const inventoryPlugin = createPlugin<BasePlugin & {
     manager: typeof invManager
     itemPool: typeof ItemPool
   }>
@@ -117,7 +119,7 @@ for (const pool of stuffWithNewPools) {
 }
 
 export class InvClass {
-  inventories: Record<string, Inventory>;
+  inventories: Record<string, Inventory|undefined>;
 
   constructor() {
       this.inventories = {};
@@ -148,5 +150,3 @@ export class InvClass {
       }
   }
 }
-
-export default inventoryPlugin

@@ -1,3 +1,4 @@
+/// <reference types="@ragempcommunity/types-server" />
 import { isEqual, isMatch } from "underscore"
 import { InventoryTable, VInventoryType, VItemInstance, VSubItems } from "./types"
 import { ItemPool } from "./items"

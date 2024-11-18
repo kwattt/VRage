@@ -1,6 +1,5 @@
-
+// src/server/types/index.ts
 import '@ragempcommunity/types-server'
-import type { AccountTable } from './index';
 
 declare global {
   interface PlayerMp {
@@ -24,17 +23,27 @@ declare global {
   interface ObjectMp {
     v: VObjectMp
   }
-
   interface EntityMp {
     v: VEntityMp
   }
-  
-  export interface VEntityMp {}
-  export interface VVehicleMp extends VEntityMp {}
-  export interface VCheckpointMp extends VEntityMp {}
-  export interface VMarkerMp extends VEntityMp {}
-  export interface VLabelMp extends VEntityMp {}
-  export interface VPedMp extends VEntityMp {}
-  export interface VObjectMp extends VEntityMp {}
-  export interface VPlayerMp extends VEntityMp {}
+
+  // Keep these inside global but make them available globally
+  interface VEntityMp {}
+  interface VVehicleMp extends VEntityMp {}
+  interface VCheckpointMp extends VEntityMp {}
+  interface VMarkerMp extends VEntityMp {}
+  interface VLabelMp extends VEntityMp {}
+  interface VPedMp extends VEntityMp {}
+  interface VObjectMp extends VEntityMp {}
+  interface VPlayerMp extends VEntityMp {}
 }
+
+// Make them available for import
+export type VEntityMp = globalThis.VEntityMp
+export type VVehicleMp = globalThis.VVehicleMp
+export type VCheckpointMp = globalThis.VCheckpointMp
+export type VMarkerMp = globalThis.VMarkerMp
+export type VLabelMp = globalThis.VLabelMp
+export type VPedMp = globalThis.VPedMp
+export type VObjectMp = globalThis.VObjectMp
+export type VPlayerMp = globalThis.VPlayerMp

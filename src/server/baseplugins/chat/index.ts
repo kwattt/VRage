@@ -1,3 +1,4 @@
+/// <reference types="@ragempcommunity/types-server" />
 import { createEventHandler, createPlugin } from "../../plugins";
 
 class ChatPluginClass {

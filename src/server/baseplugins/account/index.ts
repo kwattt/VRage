@@ -115,5 +115,3 @@ declare global {
     'vrage-account': typeof accountPlugin
   }
 }
-
-export {}
