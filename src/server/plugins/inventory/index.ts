@@ -6,6 +6,7 @@ import { VInventoryType } from "./types";
 import { Inventory } from "./inventory";
 import invManager from "./manager";
 import { ItemPool } from "./items";
+import { vdb } from "src/server/db";
 
 export const inventoryPlugin = createPlugin<BasePlugin & {
     manager: typeof invManager
@@ -14,6 +15,29 @@ export const inventoryPlugin = createPlugin<BasePlugin & {
 ({
   name: 'vrage-inventory',
   version: '1.0.0',
+
+  async databaseload() {
+    // we need to create if the table does not exist
+
+    /*
+      export interface InventoryTable {
+        id: Generated<number>
+        items: JSONColumnType<VItemInstance[]> | null
+        maxweight: number
+        slots: number
+        type: VInventoryType
+      }
+    */
+
+    vdb.db.schema.createTable('inventory')
+      .ifNotExists()
+      .addColumn('id', 'serial', col => col.primaryKey())
+      .addColumn('items', 'jsonb')
+      .addColumn('maxweight', 'integer')
+      .addColumn('slots', 'integer')
+      .addColumn('type', 'varchar')
+      .execute()
+  },
 
   events: [
     {event: 'playerJoin', handler: (p: PlayerMp) => 

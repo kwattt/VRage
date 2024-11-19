@@ -1,4 +1,4 @@
-import { ColumnType, JSONColumnType, Generated } from "kysely";
+import { JSONColumnType, Generated } from "kysely";
 import { Inventory } from "../inventory";
 
 export interface VDefaultItemData {
@@ -8,6 +8,11 @@ export interface VDefaultItemData {
 } 
 
 declare global {
+  interface IServerEvents {
+    'v-inv:openInventory': (player: PlayerMp, name: string, inv: Inventory, canEdit: boolean, maxDistance?: number) => void
+    'v-inv:closeInventory': (inv: Inventory, slot: number) => void
+  }
+
   interface VWeaponData extends VDefaultItemData {
     ammoType: 'pistol' | 'rifle' | 'shotgun' | 'smg' | 'sniper' | 'heavy' | 'special'
     weaponModel: number | string ,

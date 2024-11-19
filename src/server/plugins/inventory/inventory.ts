@@ -581,4 +581,30 @@ export class Inventory {
         .execute()
     }
   }
+
+  static async loadFromDb(id: number) : Promise<{
+    id: number,
+    type: VInventoryType,
+    maxWeight: number,
+    slots: number,
+    items: VSubItems
+  } | null> {
+
+    const inventory = await vdb.db
+      .selectFrom('inventory')
+      .selectAll()
+      .where('id', '=', id)
+      .executeTakeFirstOrThrow()
+
+    if(!inventory)
+      return null
+
+    return {
+      id: inventory.id,
+      type: inventory.type,
+      maxWeight: inventory.maxweight,
+      slots: inventory.slots,
+      items: inventory.items
+    }
+  }
 }

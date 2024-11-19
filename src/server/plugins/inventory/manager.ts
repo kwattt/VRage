@@ -28,7 +28,7 @@ class InventoryManager {
       for(const i of ids_to_remove)
         player.v._openInv[i] = undefined
 
-      player.call('vrage-inventory:closeInventory', [ids_to_remove])
+      //player.call('v-inv:closeInventory', [ids_to_remove])
     }
   }
 
@@ -60,19 +60,12 @@ class InventoryManager {
     this._PlayerOpenInventories[inv.type][inv.entityId].push(player)
     player.v._openInv[slot] = {name, type: inv.type, id:inv.entityId, canEdit, maxDistance}
     this.setInventoryForPlayer(player, slot, name, inv, canEdit, maxDistance)
+    mp.events.call('v-inv:openInventory', player, name, inv, canEdit, maxDistance)
     return true 
   }
 
   setInventoryForPlayer(player: PlayerMp, slot: number, name: string, inv: Inventory, canEdit: boolean, maxDistance?: number){
     player.v._openInv[slot] = {name, type: inv.type, id:inv.entityId, canEdit, maxDistance}
-    player.call('vrage-inventory:setInventory', [{
-      slot,
-      name,
-      weight: inv.getInventoryCurrentWeight(),
-      maxWeight: inv.maxWeight,
-      canEdit: canEdit,
-      items: inv.items,
-    }])
   }
 
   closeInventoryForPlayer(player: PlayerMp, inv: Inventory){
@@ -84,8 +77,10 @@ class InventoryManager {
       }
     }
     if (slot === -1) return
+
+    player.v._openInv[slot] = undefined
+    mp.events.call('v-inv:closeInventory', player, inv, slot)
     this._PlayerOpenInventories[inv.type][inv.entityId] = this._PlayerOpenInventories[inv.type][inv.entityId].filter(v => v !== player)
-    player.call('vrage-inventory:closeInventory', [slot])
   }
 
   hasInventoryOpen(player: PlayerMp, inv: Inventory){
