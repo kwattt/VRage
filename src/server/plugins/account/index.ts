@@ -1,7 +1,7 @@
 import { Updateable } from "kysely"
 import { AccountTable } from "./types"
-import { BasePlugin } from "../../plugins/types";
-import { createPlugin } from "../../plugins";
+import { BasePlugin } from "../types";
+import { createPlugin } from "..";
 import { vdb } from "../../db";
 
 import * as bcrypt from 'bcryptjs'

@@ -1,6 +1,6 @@
 /// <reference path="../../types/index.ts" />
-import { createEventHandler, createPlugin } from '../../plugins';
-import type { BasePlugin } from '../../plugins/types';
+import { createEventHandler, createPlugin } from '..';
+import type { BasePlugin } from '../types';
 
 export function getFnParamNames(fn: Function): string[] {
     const fnStr = fn.toString();

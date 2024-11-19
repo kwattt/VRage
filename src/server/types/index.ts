@@ -1,7 +1,5 @@
 // src/server/types/index.ts
 export * from './ragemp';
-export * from '../plugins/types';
-export * from '../baseplugins/account/types';
 
 import { DB } from "../db";
 import { PluginManager } from "../plugins";

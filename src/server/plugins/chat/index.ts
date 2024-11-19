@@ -1,5 +1,5 @@
 /// <reference types="@ragempcommunity/types-server" />
-import { createEventHandler, createPlugin } from "../../plugins";
+import { createEventHandler, createPlugin } from "..";
 
 class ChatPluginClass {
   messageHistory: string[] = [];

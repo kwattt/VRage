@@ -1,7 +1,10 @@
-// src/server/types/index.ts
-import '@ragempcommunity/types-server'
+/// <reference types="@ragempcommunity/types-server" />
 
 declare global {
+  interface Mp {
+    v: VMp
+  }
+
   interface PlayerMp {
     v: VPlayerMp
   }
@@ -36,6 +39,7 @@ declare global {
   interface VPedMp extends VEntityMp {}
   interface VObjectMp extends VEntityMp {}
   interface VPlayerMp extends VEntityMp {}
+  interface VMp {}
 }
 
 // Make them available for import
@@ -47,3 +51,4 @@ export type VLabelMp = globalThis.VLabelMp
 export type VPedMp = globalThis.VPedMp
 export type VObjectMp = globalThis.VObjectMp
 export type VPlayerMp = globalThis.VPlayerMp
+export type VMp = globalThis.VMp

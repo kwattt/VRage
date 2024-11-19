@@ -1,7 +1,7 @@
-/// <reference path="../../types/index.ts" />
+/// <reference path="../../types/ragemp.ts" />
 
-import { createPlugin } from "../../plugins";
-import { BasePlugin } from "../../plugins/types";
+import { createPlugin } from "..";
+import { BasePlugin } from "../types";
 import { VInventoryType } from "./types";
 import { Inventory } from "./inventory";
 import invManager from "./manager";

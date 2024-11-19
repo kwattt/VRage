@@ -189,3 +189,4 @@ export function createPlugin<T extends Record<string, any> = {}>(
     ...rest
   } as ExtendedPlugin<T>;
 }
+
